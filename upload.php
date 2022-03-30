@@ -94,7 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	// Move the renamed file to actual folder
-	$new_file_name = date("Y-m-d-H-i-s") . "-" . rand();
+	$time_random = date("YmdHis") . rand();
+	$new_file_name = hash('crc32', $time_random, false);
 	$permanent_upload_path = $images_folder . $new_file_name . "." . $extension;
 	$file_moved = move_uploaded_file($temp_path, $permanent_upload_path);
 
