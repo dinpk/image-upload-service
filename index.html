@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+	<title>My Image Service</title>
+	<meta charset="utf-8">
+	<script src="upload.js"></script>
+	<link rel="stylesheet" href="upload.css">
+</head>
+<body onload="loadSettings();">
+	<header>
+		<div></div>
+		<div><a href="./"><img src="images/logo.png"></a></div>
+		<div>
+			<a href="#"><img src="images/icon_settings.png" onclick="settingsPanel();"></a>
+			<div id="settings_panel" class="hide">
+				<p>
+					<b>Max resize width</b><br>
+					<input type="number" id="max_resize_width" onchange="saveSettings();">
+				</p>
+				<p>
+					<b>Max resize height</b><br>
+					<input type="number" id="max_resize_height" onchange="saveSettings();">
+				</p>
+			</div>
+		</div>
+	</header>
+	<main>
+		<form method="post">
+			<progress id="upload_progress" value="1" max="100" class="hide"></progress>
+			<label id="select_button" for="selected_files">Select images...</label>
+			<input id="selected_files" name="selected_files" type="file" class="selected_files hide" accept="image/*" onchange="previewImages(event);" multiple>
+			<div id="preview_images"></div>
+			<div id="uploaded_images"></div>
+			<input id="upload_button" type="button" value="Upload" onclick="multipleImageUpload()" class="hide"> 
+			<div id="image_link_options" class="hide"></div>
+		</form>
+	</main>
+</body>
+</html>

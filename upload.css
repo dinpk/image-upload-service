@@ -1,0 +1,115 @@
+body {
+	margin:0;
+	font-size:15px;
+	font-family:Arial;
+}
+
+a {
+	text-decoration: none;
+}
+
+header {
+	padding:1em 1em .4em 1em;
+	border-bottom:1px solid #AAA;
+	margin-bottom:2em;
+	display:flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+header img {
+	max-height:40px;
+}
+
+main {
+	max-width:1200px;
+	margin:0 auto;
+	padding-top:5em;
+	text-align:center;
+}
+
+#select_button {
+	max-width:150px;
+	padding:.5em 1em .5em 1em;
+	color:#FFF;
+	background-color:dodgerblue;
+	text-align:center;
+	cursor:pointer;
+	font-size:1.3em;
+	border-radius:.3em;
+	border:4px solid rgb(235, 228, 228);
+}
+
+#select_button:hover {
+	background-color:rgb(5, 105, 206);
+}
+
+#upload_button {
+	max-width:150px;
+	padding:.5em 1em .5em 1em;
+	background-color:forestgreen;
+	text-align:center;
+	cursor:pointer;
+	font-size:1.3em;
+	color:white;
+	border-radius:.3em;
+	border:4px solid rgb(235, 228, 228);
+}
+
+#upload_button:hover {
+	background-color:rgb(7, 102, 7);
+}
+
+#preview_images {
+	text-align:center;
+	padding-bottom:3em;
+}
+
+#preview_images img {
+	border:2px solid #CCC;
+	max-width:100px;
+	max-height:50px;
+	margin:2px;
+}
+
+#uploaded_images {
+	text-align:center;
+}
+
+.uploaded_image {
+	border:3px solid #DDD;
+	max-width:150px;
+	max-height:100px;
+	margin:0 1em 0 1em;
+	cursor:pointer;
+}
+
+#upload_progress {
+	margin-bottom:2em;
+}
+
+#image_link_options {
+	text-align:left;
+	margin:2em 0 2em 0;
+	padding:1em 3em 2em 3em;
+	border-top:3px solid dodgerblue;
+	background-color:#EEE;	
+}
+
+.hide {
+	display:none;
+}
+
+#settings_panel {
+	position:fixed;
+	top:60px;
+	right:10px;
+	border:1px solid #CCC;
+	background-color:#FFF;
+	padding:1em;
+	box-shadow:0 0 .2em 0 gray;
+}
+
+#settings_panel input {
+	max-width:130px;
+}
