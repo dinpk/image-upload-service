@@ -68,36 +68,6 @@ function previewImages(e) {
 	}
 }
 
-function getResizedBlob(result,image_type) {
-	var image = document.createElement("img");
-	image.src = result;
-	var canvas = document.createElement("canvas");
-	var ctx = canvas.getContext("2d");
-	ctx.drawImage(image, 0, 0);
-	var width = image.width;
-	var height = image.height;
-	if (width > height) {
-		if (width > max_resize_width) {
-			height *= max_resize_width / width;
-			width = max_resize_width;
-		}
-	} else {
-		if (height > max_resize_height) {
-			width *= max_resize_height / height;
-			height = max_resize_height;
-		}
-	}
-	canvas.width = width;
-	canvas.height = height;
-	ctx.drawImage(image, 0, 0, width, height);
-	var dataurl = canvas.toDataURL(image_type);
-	var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-		bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-	while(n--){
-		u8arr[n] = bstr.charCodeAt(n);
-	}
-	return new Blob([u8arr], {type:mime});
-}
 
 
 var upload_counter = 0;
@@ -113,27 +83,66 @@ function multipleImageUpload() {
 
 	Array.from(files_to_upload).forEach(file => { // to get non-async behavior for file reader in loop
 		var reader = new FileReader();
-		reader.onload = async function(e) {
-			const form = new FormData();
-			form.append("file_name", file.name);
-			form.append("image_type", file.type);
-			form.append("selected", getResizedBlob(e.target.result, file.type));
-			// https://api.imgbb.com/1/upload?expiration=15552000&key=yourkey
-			try {
-				const response = await fetch('upload.php',{
-					method:'POST',
-					body:form
-				});
-				const result = await response.json();
-				upload_counter++;
-				document.getElementById("uploaded_images").innerHTML += `<img src="${result.data.thumb.url}" onclick="imageLinks('${result.data.url}', '${result.data.thumb.url}');return false;" class="uploaded_image">`;
-				upload_progress.value = progress_part * upload_counter;
-			} catch(e) {
-				console.log(e);
-			}
-		}
 		reader.readAsDataURL(file);
-	});
+		reader.onload = async function(e) {
+
+			// RESIZE IMAGE
+			let image = document.createElement("img");
+			image.src = e.target.result; // file reader result
+			image.onload = async function (e) {
+				let width = image.width;
+				let height = image.height;
+				let canvas = document.createElement("canvas");
+				let context = canvas.getContext("2d");
+				context.drawImage(image, 0, 0);
+				if (width > height) {
+					if (width > max_resize_width) {
+						height *= max_resize_width / width;
+						width = max_resize_width;
+					}
+				} else {
+					if (height > max_resize_height) {
+						width *= max_resize_height / height;
+						height = max_resize_height;
+					}
+				}
+				canvas.width = width;
+				canvas.height = height;
+				context.drawImage(image, 0, 0, width, height);
+				let data_url = canvas.toDataURL(file.type);
+				let arr = data_url.split(',');
+				let mime = arr[0].match(/:(.*?);/)[1];
+				let bstr = atob(arr[1]);
+				let n = bstr.length;
+				let u8arr = new Uint8Array(n);
+				while (n--) {
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				let resized_blob = new Blob([u8arr], { type: mime });
+
+				// UPLOAD FILE
+				const form = new FormData();
+				form.append("file_name", file.name);
+				form.append("image_type", file.type);
+				form.append("selected", resized_blob);
+				try {
+					const response = await fetch('upload.php', {
+						method: 'POST',
+						body: form
+					});
+					const result = await response.json();
+					upload_counter++;
+					document.getElementById("uploaded_images").innerHTML += `<img src="${result.data.thumb.url}" onclick="imageLinks('${result.data.url}', '${result.data.thumb.url}');return false;" class="uploaded_image">`;
+					upload_progress.value = progress_part * upload_counter;
+				} catch (e) {
+					console.log(e);
+				}
+
+			} // image onload
+
+		} // reader onload
+		
+	}); // array loop
 
 
 	upload_timer = setInterval(function() {
